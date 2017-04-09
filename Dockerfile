@@ -8,28 +8,26 @@ ENV LANG="en_US.UTF-8" \
 ### SETUP
 COPY assets /assets
 RUN apk update && apk upgrade && \
-    apk add ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
-    update-ca-certificates && \
+    apk add wget make gcc musl-dev readline-dev openssl-dev ncurses-dev && \
     addgroup softether && adduser -g 'softether' -G softether -s /sbin/nologin -D -H softether && \
     mv /assets/entrypoint.sh / && chmod +x /entrypoint.sh && \
 
     # Fetch sources
-    wget -O - https://github.com/SoftEtherVPN/SoftEtherVPN/archive/${SOFTETHER_VERSION}.tar.gz | tar xzf - && \
+    wget --no-check-certificate -O - https://github.com/SoftEtherVPN/SoftEtherVPN/archive/${SOFTETHER_VERSION}.tar.gz | tar xzf - && \
     cd SoftEtherVPN-${SOFTETHER_VERSION:1} && \
     # Patching sources
     for file in /assets/patchs/*.sh; do /bin/sh "$file"; done && \
     # Compile and Install
     cp src/makefiles/linux_64bit.mak Makefile && \
-    make && make install && \
+    make && make install && make clean && \
 
     # Cleanning
-    make clean && \
     cd .. && rm -rf SoftEtherVPN-${SOFTETHER_VERSION:1} && \
-    # Removing bridge, client and cmd
-    rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd && \
-    # Removing installation file
-    apk del wget tar ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
-    rm -rf /var/cache/apk/* /assets
+    apk del wget make gcc musl-dev readline-dev openssl-dev ncurses-dev && \
+    # Reintroduce necessary libraries
+    apk add libssl1.0	libcrypto1.0 readline ncurses-libs && \
+    # Removing vpnbridge, vpnclient , vpncmd and build files
+    rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd /var/cache/apk/* /assets
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["vpnserver start"]
+#ENTRYPOINT ["/entrypoint.sh"]
+CMD ["vpnserver", "start"]
