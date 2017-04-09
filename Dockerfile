@@ -8,7 +8,7 @@ ENV LANG="en_US.UTF-8" \
 ### SETUP
 COPY assets /assets
 RUN apk update && apk upgrade && \
-    apk add wget tar ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
+    apk add ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
     update-ca-certificates && \
     addgroup softether && adduser -g 'softether' -G softether -s /sbin/nologin -D -H softether && \
     mv /assets/entrypoint.sh / && chmod +x /entrypoint.sh && \
@@ -25,8 +25,11 @@ RUN apk update && apk upgrade && \
     # Cleanning
     make clean && \
     cd .. && rm -rf SoftEtherVPN-${SOFTETHER_VERSION:1} && \
+    # Removing bridge, client and cmd
+    rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd
+    # Removing installation file
     apk del wget tar ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
     rm -rf /var/cache/apk/* /assets
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["vpnserver start"]
+CMD ["/bin/bash"]
