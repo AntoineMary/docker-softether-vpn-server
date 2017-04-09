@@ -26,10 +26,10 @@ RUN apk update && apk upgrade && \
     make clean && \
     cd .. && rm -rf SoftEtherVPN-${SOFTETHER_VERSION:1} && \
     # Removing bridge, client and cmd
-    rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd
+    rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd && \
     # Removing installation file
     apk del wget tar ca-certificates gcc make libc-dev libpthread-stubs openssl-dev readline-dev ncurses-dev && \
     rm -rf /var/cache/apk/* /assets
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"]
+CMD ["vpnserver start"]
