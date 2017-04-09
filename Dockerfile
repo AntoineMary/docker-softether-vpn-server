@@ -29,5 +29,5 @@ RUN apk update && apk upgrade && \
     # Removing vpnbridge, vpnclient , vpncmd and build files
     rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd /var/cache/apk/* /assets
 
-#ENTRYPOINT ["/entrypoint.sh"]
-CMD ["vpnserver", "start"]
+ENTRYPOINT ["/usr/vpnserver/vpnserver"]
+CMD ["execsvc"]
