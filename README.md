@@ -1,8 +1,5 @@
 # Lightweight [Softether VPN][softether] Server
-[![Build Status][project-build-image]][project-build-link]
-[![Docker Build][docker-build-image]][docker-build-link]
-[![Docker Stars][docker-stars-image]][docker-stars-link]
-[![Docker Pulls][docker-pulls-image]][docker-pulls-link]
+[![Build Status][project-build-image]][project-build-link] [![Docker Build][docker-build-image]][docker-build-link] [![Docker Stars][docker-stars-image]][docker-stars-link] [![Docker Pulls][docker-pulls-image]][docker-pulls-link]
 
 This docker only contains a working **SoftEther VPN Server** other components have been removed.
 
