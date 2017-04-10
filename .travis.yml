@@ -1,0 +1,15 @@
+language: c
+
+env:
+  - BUILD_DIR=.
+
+services:
+  - docker
+
+before_install:
+  - docker build -t amary/softether-vpn-server $BUILD_DIR
+
+install: true
+
+script:
+  - docker run amary/softether-vpn-server echo "[Travis CI OK]"

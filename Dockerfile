@@ -25,7 +25,7 @@ RUN apk update && apk upgrade && \
     apk del wget make gcc musl-dev readline-dev openssl-dev ncurses-dev && \
     # Reintroduce necessary libraries
     apk add libssl1.0	libcrypto1.0 readline ncurses-libs && \
-    # Removing vpnbridge, vpnclient , vpncmd and build files
+    # Removing vpnbridge, vpnclient, vpncmd and build files
     cd .. && rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd \
     /var/cache/apk/* /assets SoftEtherVPN-${SOFTETHER_VERSION:1}
 
