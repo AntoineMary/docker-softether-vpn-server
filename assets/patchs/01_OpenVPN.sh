@@ -1,35 +1,53 @@
 #! /bin/sh
 set -e
 
+patch() {
+  PATTERN=$1
+
+  if [[ "$(sed -n "$PATTERN"p"" "$FILE")" ]]; then
+    echo "        > $(sed -n "$PATTERN"p"" $FILE)"
+    sed -i "$PATTERN" "$FILE"
+  else
+    echo "Nothing to replace in "$FILE" with "$PATTERN"" >&2
+    exit 1
+  fi
+}
+
+echo "Executing 03_OpenVPN.sh"
+echo ""
+
 FILE="src/Cedar/Interop_OpenVPN.h"
 echo "> Patching $FILE <"
 if [ -f $FILE ]; then
+
   echo "  - Changing default algorithm -"
-  sed -n 's/"AES-128-CBC"/"AES-256-CBC"/gp' $FILE
-  sed -n 's/"SHA1"/"RMD160"/gp' $FILE
+  patch 's/"AES-128-CBC"/"AES-256-CBC"/g'
+  patch 's/"SHA1"/"RMD160"/g'
 
   echo "  - Changing default OpenVPN client option string -"
-  sed -n 's/cipher AES-128-CBC,auth SHA1/cipher AES-256-CBC,auth RMD160/gp' $FILE
+  patch 's/cipher AES-128-CBC,auth SHA1/cipher AES-256-CBC,auth RMD160/g'
 
   echo "> $FILE Patched <"
 else
   echo "$FILE don't exist" >&2
-  exit 1
 fi
+
+echo ""
 
 FILE="src/bin/hamcore/openvpn_sample.ovpn"
 echo "> Patching $FILE <"
 if [ -f $FILE ]; then
+
   echo "  - Changing default cipher -"
-  sed -n 's/cipher AES-128-CBC/cipher AES-256-CBC/gp' $FILE
+  patch 's/cipher AES-128-CBC/cipher AES-256-CBC/g'
 
   echo "  - Changing default auth -"
-  sed -n 's/auth SHA1/auth RMD160/gp' $FILE
+  patch 's/auth SHA1/auth RMD160/g'
 
   echo "> $FILE Patched <"
 else
   echo "$FILE don't exist" >&2
-  exit 1
 fi
 
+echo ""
 exit 0
