@@ -23,8 +23,6 @@ if [ -f $FILE ]; then
   echo "  - Changing default algorithm -"
   patch 's/"RC4-MD5"/"DHE-RSA-AES256-SHA"/g'
 
-  cat src/Cedar/Server.h | grep "DHE-RSA-AES256-SHA"
-
   echo "  - Changing default name of HUB -"
   patch 's/"DEFAULT"/"HUB"/g'
 
