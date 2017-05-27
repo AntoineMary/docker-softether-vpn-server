@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ "$1" = '/usr/vpnserver/vpnserver' ]; then
+if [ "x$1" = 'x/usr/vpnserver/vpnserver' ]; then
     chown -R softether:softether /usr/vpnserver
     setcap 'cap_net_bind_service=+ep' /usr/vpnserver/vpnserver
 
