@@ -1,6 +1,8 @@
 # Lightweight [Softether VPN][softether] Server
 [![Build Status][project-build-image]][project-build-link] [![Docker Build][docker-build-image]][docker-build-link] [![Docker Stars][docker-stars-image]][docker-stars-link] [![Docker Pulls][docker-pulls-image]][docker-pulls-link]
 
+[![MicroBadger Version][micro-version-image]][micro-version-links] [![MicroBadger Size][micro-size-image]][micro-size-link]
+
 This docker only contains a working **SoftEther VPN Server** other components have been removed.
 
 If you need other parts :
@@ -51,7 +53,7 @@ For a simple use without persistence :
 ```
 docker run -d --cap-add NET_ADMIN -p 443:443/tcp -p 992:992/tcp -p 1194:1194/udp -p 5555:5555/tcp amary/softether-vpn-server
 ```
-For a simple use with persistence (will give you acces to configuration and logs) :
+For a simple use with persistence (will give you access to configuration and logs) :
 ```
 docker run -d --cap-add NET_ADMIN -p 443:443/tcp -p 992:992/tcp -p 1194:1194/udp -p 5555:5555/tcp -v /host/path/vpnserver:/usr/vpnserver:Z amary/softether-vpn-server
 ```
@@ -59,6 +61,7 @@ Add/delete any ```-p $PORT:$PORT/{tcp,udp} depending on you will ```
 
 # Changelog
 * v4.22-9634-beta : Initial Release
+* v4.22-9634-beta.patch1 : Update Alpine to 3.6, Improve Dockerfile, Secure Entrypoint
 
 [//]: <> (==== Reference Part ====)
 
@@ -89,3 +92,9 @@ Add/delete any ```-p $PORT:$PORT/{tcp,udp} depending on you will ```
 
 [docker-pulls-image]: https://img.shields.io/docker/pulls/amary/softether-vpn-server.svg
 [docker-pulls-link]: https://hub.docker.com/r/amary/softether-vpn-server/
+
+[micro-size-image]:https://images.microbadger.com/badges/image/amary/softether-vpn-server.svg
+[micro-size-link]: https://microbadger.com/images/amary/softether-vpn-server
+
+[micro-version-image]: https://images.microbadger.com/badges/version/amary/softether-vpn-server.svg
+[micro-version-links]: https://microbadger.com/images/amary/softether-vpn-server
