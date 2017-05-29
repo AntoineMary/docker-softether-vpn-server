@@ -32,12 +32,7 @@ RUN set -ex ; \
       libcap libcrypto1.0 libssl1.0 ncurses-libs readline su-exec ; \
     # Removing vpnbridge, vpnclient, vpncmd and build files
     cd .. ; rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd /usr/bin/vpnserver \
-      /assets SoftEtherVPN-${SOFTETHER_VERSION:1} ; \
-
-    # linking server logs to stdout
-    touch /usr/bin/vpnserver/server_log/
-
-
+      /assets SoftEtherVPN-${SOFTETHER_VERSION:1} ; 
 
 EXPOSE 443/tcp 992/tcp 1194/udp 5555/tcp
 
