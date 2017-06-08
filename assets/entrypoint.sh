@@ -4,8 +4,8 @@ set -e
 if [ "x$1" = 'x/usr/vpnserver/vpnserver' ]; then
     for d in server_log security_log packet_log;
     do
-        mkdir -p /var/log/vpnserver/vpn_server/$d
-        ln -s /var/log/vpnserver/vpn_server/server_log /usr/vpnserver/$d
+        mkdir -p /var/log/vpnserver/$d
+        ln -s /var/log/vpnserver/$d /usr/vpnserver/$d
     done
     chown -R softether:softether /usr/vpnserver
     setcap 'cap_net_bind_service=+ep' /usr/vpnserver/vpnserver
