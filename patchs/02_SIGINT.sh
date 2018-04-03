@@ -13,18 +13,15 @@ patch() {
   fi
 }
 
-echo "Executing 00_Server.sh"
+echo "Executing 02_SIGINT.sh"
 echo ""
 
-FILE="src/Cedar/Server.h"
+FILE="src/Mayaqua/Unix.c"
 echo "> Patching $FILE <"
 if [ -f $FILE ]; then
 
-  echo "  - Changing default algorithm -"
-  patch 's/"RC4-MD5"/"DHE-RSA-AES256-SHA"/g'
-
-  echo "  - Changing default name of HUB -"
-  patch 's/"DEFAULT"/"HUB"/g'
+  echo "  - Changing stop signal -"
+  patch 's/SIGTERM/SIGINT/g'
 
   echo "> $FILE Patched <"
 else

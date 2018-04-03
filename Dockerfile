@@ -1,43 +1,45 @@
-FROM alpine:3.6
+FROM alpine:3.7 as build
+### SET ENVIRONNEMENT
+ENV LANG="en_US.UTF-8" \
+    SOFTETHER_VERSION="5.1"
+
+### SETUP
+RUN apk add --no-cache --virtual .build-deps \
+      gcc make musl-dev ncurses-dev openssl-dev readline-dev wget
+
+COPY patchs /patchs
+# Fetch sources
+RUN wget --no-check-certificate -O - https://github.com/SoftEtherVPN/SoftEtherVPN/archive/${SOFTETHER_VERSION}.tar.gz | tar xzf -
+
+WORKDIR /SoftEtherVPN-${SOFTETHER_VERSION}
+
+# Patching sources
+RUN for file in /patchs/*.sh; do /bin/sh "$file"; done ;
+# Compile and Install
+RUN cp src/makefiles/linux_64bit.mak Makefile
+RUN make ; make install ; make clean
+# Striping vpnserver
+RUN strip /usr/vpnserver/vpnserver
+
+##################
+
+FROM amary/base:3.7
 LABEL maintainer="Antoine Mary <antoinee.mary@gmail.com>" \
       contributor="Dimitri G. <dev@dmgnx.net>"
 
-### SET ENVIRONNEMENT
 ENV LANG="en_US.UTF-8" \
-    SOFTETHER_VERSION="v4.22-9634-beta"
+    APP_NAME="SoftEtherVPN Server" \
+    APP_VERSION="5.1" \
+    APP_LOCATION="/usr/vpnserver/vpnserver"
 
 ### SETUP
-COPY assets /assets
-RUN set -ex ; \
-    addgroup -S softether ; adduser -D -H softether -g softether -G softether -s /sbin/nologin ; \
-    apk add --no-cache --virtual .build-deps \
-      gcc make musl-dev ncurses-dev openssl-dev readline-dev wget ; \
-    mv /assets/entrypoint.sh / ; chmod +x /entrypoint.sh ; \
+RUN apk add --no-cache --virtual .run-deps \
+      libcap libcrypto1.0 libssl1.0 ncurses-libs readline
 
-    # Fetch sources
-    wget --no-check-certificate -O - https://github.com/SoftEtherVPN/SoftEtherVPN/archive/${SOFTETHER_VERSION}.tar.gz | tar xzf - ; \
-    cd SoftEtherVPN-${SOFTETHER_VERSION:1} ; \
-    # Patching sources
-    for file in /assets/patchs/*.sh; do /bin/sh "$file"; done ; \
-    # Compile and Install
-    cp src/makefiles/linux_64bit.mak Makefile ; \
-    make ; make install ; make clean ; \
-    # Striping vpnserver
-    strip /usr/vpnserver/vpnserver ; \
-    mkdir -p /etc/vpnserver /var/log/vpnserver; ln -s /etc/vpnserver/vpn_server.config /usr/vpnserver/vpn_server.config ; \
-
-    # Cleanning
-    apk del .build-deps ; \
-    # Reintroduce necessary libraries
-    apk add --no-cache --virtual .run-deps \
-      libcap libcrypto1.0 libssl1.0 ncurses-libs readline su-exec ; \
-    # Removing vpnbridge, vpnclient, vpncmd and build files
-    cd .. ; rm -rf /usr/vpnbridge /usr/bin/vpnbridge /usr/vpnclient /usr/bin/vpnclient /usr/vpncmd /usr/bin/vpncmd /usr/bin/vpnserver \
-      /assets SoftEtherVPN-${SOFTETHER_VERSION:1} ;
+COPY --from=build --chown=app:app /usr/vpnserver /usr/vpnserver
 
 EXPOSE 443/tcp 992/tcp 1194/udp 5555/tcp
 
+STOPSIGNAL SIGINT
 VOLUME ["/etc/vpnserver", "/var/log/vpnserver"]
-
-ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/vpnserver/vpnserver", "execsvc"]
