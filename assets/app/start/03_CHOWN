@@ -1,0 +1,4 @@
+#!/bin/sh
+
+set -e
+chown -R app:app /usr/vpnserver /etc/vpnserver /var/log/vpnserver

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+for d in server_log security_log packet_log;
+do
+    if [ ! -L /usr/vpnserver/$d ]; then
+      mkdir -p /var/log/vpnserver/$d
+      ln -s /var/log/vpnserver/$d /usr/vpnserver/$d
+    fi
+done
+
+if [ ! -L /usr/vpnserver/vpn_server.config ]; then
+  ln -s /etc/vpnserver/vpn_server.config /usr/vpnserver/vpn_server.config
+fi
